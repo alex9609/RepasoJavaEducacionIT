@@ -59,14 +59,14 @@ public class PersonaDAO {
 		PersonaVO rp = null;
 		int number_id;
 		Conexion conn = new Conexion();
-		
-		if(existePersona(id)) {
+
+		if (existePersona(id)) {
 			try {
 				Statement estatuto = conn.getConnection().createStatement();
 				estatuto.execute("SELECT * FROM persona WHERE id = " + id);
 				ResultSet datos = estatuto.getResultSet();
-				
-				if(datos.next()) {
+
+				if (datos.next()) {
 					number_id = (int) datos.getLong(1);
 					String nombre = datos.getString(2);
 					int edad = (int) datos.getLong(3);
@@ -74,13 +74,15 @@ public class PersonaDAO {
 					int telefono = (int) datos.getLong(5);
 					rp = new PersonaVO(nombre, edad, profesion, telefono);
 					rp.setIdPersona(number_id);
-					
+
 				}
 				estatuto.close();
-				
+
 			} catch (SQLException e) {
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(null, "No se pudo obtener datos " + e.getMessage());
+			} finally {
+				conn.cerrar();
 			}
 		}
 
@@ -90,7 +92,7 @@ public class PersonaDAO {
 
 	public void eliminarPersona(int id) {
 		Conexion conn = new Conexion();
-		if(existePersona(id)) {
+		if (existePersona(id)) {
 			try {
 				Statement estatuto = conn.getConnection().createStatement();
 				estatuto.execute("DELETE FROM persona WHERE ID = " + id);
@@ -98,34 +100,42 @@ public class PersonaDAO {
 				estatuto.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
+			} finally {
+				conn.cerrar();
 			}
-		}else {
-			JOptionPane.showMessageDialog(null, "No existe la persona con el id " + id );
+		} else {
+			JOptionPane.showMessageDialog(null, "No existe la persona con el id " + id);
 		}
 
 	}
 
 	public boolean existePersona(int id) {
 		Conexion conn = new Conexion();
+		boolean encontrado = false;
+		Statement estatuto = null;
 		try {
-			Statement estatuto = conn.getConnection().createStatement();
+			estatuto = conn.getConnection().createStatement();
 			estatuto.execute("SELECT * FROM persona WHERE id = " + id);
 			ResultSet datos = estatuto.getResultSet();
-			if(datos.next()) {
-				estatuto.close();
-				return true;
-			}else {
-				estatuto.close();
-				return false;
-			}
-			
+			encontrado = datos.next();
+			/*
+			 * if(datos.next()) { encontrado = true; }
+			 */
 
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println("Error al realizar la busqueda" + e.getMessage());
 			JOptionPane.showMessageDialog(null, "No se pudo hacer la consulta ");
 			return false;
+		} finally {
+			conn.cerrar();
+			try {
+				estatuto.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
+		return encontrado;
 	}
 
 }
