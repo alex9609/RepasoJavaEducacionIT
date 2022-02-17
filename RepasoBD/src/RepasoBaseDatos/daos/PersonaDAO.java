@@ -1,5 +1,6 @@
 package RepasoBaseDatos.daos;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -107,6 +108,26 @@ public class PersonaDAO {
 			JOptionPane.showMessageDialog(null, "No existe la persona con el id " + id);
 		}
 
+	}
+	
+	public void actualizarPersona(int id, PersonaVO persona) {
+		Conexion conn = new Conexion();
+			try {
+				String sql = "UPDATE persona SET nombre = ?, edad = ?, profesion = ?, telefono = ? WHERE id = " + id;
+				PreparedStatement estatuto = conn.getConnection().prepareStatement(sql);
+				estatuto.setString(1, persona.getNombrePersona());
+				estatuto.setLong(2, persona.getEdadPersona());
+				estatuto.setString(3, persona.getProfesionPersona());
+				estatuto.setLong(4, persona.getTelefonoPersona());
+				estatuto.execute();
+				
+				JOptionPane.showMessageDialog(null, "Se ha realizado la actulización con exito");
+				
+			}catch(SQLException e) {
+				e.printStackTrace();
+				System.out.println("Error al realizar en la actualización" + e.getMessage());
+				JOptionPane.showMessageDialog(null, "No se pudo hacer la actualización ");
+			}	
 	}
 
 	public boolean existePersona(int id) {

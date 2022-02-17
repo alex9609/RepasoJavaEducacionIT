@@ -15,6 +15,8 @@ public class AppPrincipal {
 		/*
 		 * PersonaVO p1 = new PersonaVO("Alex",22,"Developer",316743);
 		 * 
+		 * PersonaVO p1 = new PersonaVO("Camilo",25,"Marketing",356743);
+		 * pdao.actualizarPersona(8, p1);
 		 * 
 		 * pdao.eliminarPersona(2);
 		 * 
@@ -25,7 +27,7 @@ public class AppPrincipal {
 		do {
 			try {
 				opcion = Integer.parseInt(JOptionPane.showInputDialog("Ingrese la opcion deseada"
-						+ "\n 1. Crear persona \n 2. Borrar persona  \n 3. Consultar persona \n 4. Salir"));
+						+ "\n 1. Crear persona \n 2. Borrar persona  \n 3. Consultar persona \n 4. Actualizar persona \n 5. Salir"));
 			} catch (NumberFormatException e) {
 				String msj = e.getMessage();
 				if (msj.equals("null")) {
@@ -38,8 +40,8 @@ public class AppPrincipal {
 
 			switch (opcion) {
 			case 1:
-				
-				//Validar los datos
+
+				// Validar los datos
 				String nombre = JOptionPane.showInputDialog("Ingrese el nombre de la persona");
 				int edad = Integer.parseInt(JOptionPane.showInputDialog("Ingrese la edad de " + nombre));
 				String profesion = JOptionPane.showInputDialog("Ingrese la profesion de " + nombre);
@@ -76,21 +78,32 @@ public class AppPrincipal {
 				}
 				break;
 			case 4:
+				int id1 = Integer
+						.parseInt(JOptionPane.showInputDialog("Ingrese le id a consultar en la base de datos"));
+				if (pdao.existePersona(id1)) {
+					String nombre_nuevo = JOptionPane.showInputDialog("Ingrese el nuevo nombre de la persona");
+					int edad_nueva = Integer
+							.parseInt(JOptionPane.showInputDialog("Ingrese la nueva edad de " + nombre_nuevo));
+					String profesion_nueva = JOptionPane
+							.showInputDialog("Ingrese la nueva profesion de " + nombre_nuevo);
+					int telefono_nuevo = Integer
+							.parseInt(JOptionPane.showInputDialog("Ingrese el nuevo telefono " + nombre_nuevo));
+
+					PersonaVO person = new PersonaVO(nombre_nuevo, edad_nueva, profesion_nueva, telefono_nuevo);
+					pdao.actualizarPersona(id1, person);
+				} else {
+					JOptionPane.showMessageDialog(null, "No existe la persona con el id " + id1);
+				}
+				break;
+
+			case 5:
 				JOptionPane.showMessageDialog(null, "Gracias");
 				break;
 			}
 
-		} while (opcion != 4);
+		} while (opcion != 5);
 
 	}
-	
-	//TAREA
-//	un case 3, y la condición sea System.exit(); pa salir no se...
-//	1-crear una exception personalizada si la persona que se desea buscar no existe y lanzarla
-//	2-crear el case para actualizar persona con su respectivo metodo en el dao Modificar persona 
-	//UPDATE persona set id = ? , ......
-//	3-crear el case para poder buscar una persona por su id
-//	Hacerlo con el prepared statement
-//  Controlar lo que le pasamos por parametro a persona
 
+//  Controlar lo que le pasamos por parametro a persona
 }
